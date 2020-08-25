@@ -50,7 +50,7 @@ This will be split into two sections:
 ### Setting Up
 
 This is an example of how to list things you need to use the software and how to install them.
-* [Python] (https://www.python.org/downloads/)
+* [Python](https://www.python.org/downloads/)
 * Discord.py
 ```sh
 pip install -U discord.py
@@ -61,7 +61,7 @@ pip install -U python-dotenv
 ```
 Note: If you are using PyCharm, you can install these directly into your project's virtual environment throught 'File > Settings > Project > Python Interpreter > Install' and choose the specified libraries.
 
-Then, set up a Discord Account and Test Server if you haven't already. This will allow you to gain access to the [Developer Portal] (http://discordapp.com/developers/applications) . 
+Then, set up a Discord Account and Test Server if you haven't already. This will allow you to gain access to the [Developer Portal](http://discordapp.com/developers/applications) . 
 Under 'Applications > Settings > OAuth2' give your bot the appropriate permissions. If you don't know what permissions to choose, just check 'Scopes > Bot' and 'Bot Permissions > General Permissions > Administrator' for now.
 In a new tab, open the generated link under 'Scopes' and choose your test server.
 
@@ -99,6 +99,11 @@ DISCORD_GUILD={your-server-name}
 The bot token can be found in the Developer Portal under 'Applications > Settings > Bot > Token'. Don't give this token to anyone else.
 
 Now, you can start editing Bot.py and be able to use your bot within the server!
+
+If you would like to run the code already in this repository, simply clone the repository, rename 'dummyenv.txt' to '.env' and change the variables in it, and then enter this in the command line:
+```sh
+python bot.py
+```
 
 ### Deployment
 
