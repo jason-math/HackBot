@@ -4,7 +4,7 @@
     <img src="images/freetail_logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">HackBot</h3>
+  <h1 align="center">HackBot</h1>
 
   <p align="center">
     An awesome Discord Bot to integrate into virtual hackathons!
@@ -23,13 +23,9 @@
 * [Getting Started](#getting-started)
   * [Setting Up](#setting-up)
   * [Deployment](#deployment)
-* [Usage](#usage)
-* [Roadmap](#roadmap)
 * [Contributing](#contributing)
 * [License](#license)
 * [Contact](#contact)
-* [Acknowledgements](#acknowledgements)
-
 
 
 <!-- ABOUT THE PROJECT -->
@@ -107,22 +103,6 @@ Now, you can start editing Bot.py and be able to use your bot within the server!
 ### Deployment
 
 This section will be written very soon!
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
-
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
