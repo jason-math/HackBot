@@ -1,4 +1,5 @@
 import aiohttp
+import discord
 from discord.ext import commands
 from discord.utils import get
 import requests
@@ -21,13 +22,14 @@ class Verify(commands.Cog):
         channel = await ctx.author.create_dm()
         if response.ok:
             json_format = json.loads(response.text)
-            print(json_format["status"]["confirmed"])
+            print(json_format)
             if json_format["status"]["confirmed"] is True:
+                print(user.guild.roles);
                 if json_format["sponsor"] is True:
-                    role = get(user.server.roles, name="Sponsor")
+                    role = get(user.guild.roles, name="Sponsor")
                 else:
-                    role = get(user.server.roles, name="Hacker")
-                await self.bot.add_roles(user, role)
+                    role = get(user.guild.roles, name="Hacker")
+                await user.add_roles(role)
                 await channel.send("You have been successfully verified! Happy hacking.")
             else:
                 await channel.send("Verification failed. Please contact an organizer if you think this is incorrect.")
