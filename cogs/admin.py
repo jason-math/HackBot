@@ -2,7 +2,6 @@ from discord.ext import commands
 import discord
 import datetime
 
-
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -48,6 +47,7 @@ class Admin(commands.Cog):
 
         embed = discord.Embed(description="Server Stats", colour=discord.Colour.dark_purple())
         embed.add_field(name="Server Name", value=guild.name, inline=False)
+        embed.add_field(name="Online hackers", value=sum(member.status!=discord.Status.offline and not member.bot for member in message.guild.members), inline=False)
         embed.add_field(name="# Voice Channels", value=str(num_voice_channels))
         embed.add_field(name="# Text Channels", value=str(num_text_channels))
         embed.set_author(name=self.bot.user.name)
