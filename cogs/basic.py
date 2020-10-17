@@ -67,8 +67,11 @@ class Basic(commands.Cog):
         link = await ctx.channel.create_invite(max_age=300)
         await ctx.send(link)
 
-    @commands.command(help_command="!request", help="Request help from an organizer, sponsor, or mentor")
+    @commands.command(help_command="!request <organizer/mentor/sponsor> [company_name] message", help="Request help from an organizer, sponsor, or mentor. If sponsor is selected, please specific the company name immediately after. Your message will be shown to the appropriate group and they will be in touch with you shortly.")
     @commands.guild_only()
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @commands.check_any(commands.has_role("Hacker"), commands.has_role("Organizer"),
+                        commands.has_role("Mentor"), commands.has_role("Sponsor"))
     @in_bot_commands()
     async def request(self, ctx, *args):
         guild = ctx.guild
