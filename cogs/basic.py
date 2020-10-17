@@ -67,6 +67,41 @@ class Basic(commands.Cog):
         link = await ctx.channel.create_invite(max_age=300)
         await ctx.send(link)
 
+    @commands.command(help_command="!request", help="Request help from an organizer, sponsor, or mentor")
+    @commands.guild_only()
+    @in_bot_commands()
+    async def request(self, ctx, *args):
+        guild = ctx.guild
+        author = ctx.author
+        user_to_alert = args[0].lower()
+
+        if user_to_alert == "organizer" or user_to_alert == "mentor" or user_to_alert == "sponsor":
+            channel_name = args[1].lower() if user_to_alert == "sponsor" else user_to_alert + "s"
+            message = " ".join(args[2:]) if user_to_alert == "sponsor" else " ".join(args[1:])
+
+            # this part assumes each company has its own channel called "#google", "#microsoft", etc
+            # also assumes there is "#mentors" and "#organizers"
+            channel_to_alert = discord.utils.get(guild.text_channels, name=channel_name)
+            
+            if channel_to_alert != None:
+                await channel_to_alert.send(f"{channel_to_alert.mention} From {author.mention}: {message}")
+            else:
+                # should never get here except if company is mispelled, as long as we have "#organizers" and "#mentors"
+                dm = await ctx.author.create_dm()
+                if user_to_alert == "sponsor":
+                    await dm.send(f"Make sure you spelt the company name right. If the error still persists, please contact an organizer.")
+                    if "organizer" in [role.name.lower() for role in author.roles]:
+                        await dm.send(f"Since you are an organizer, consider making the channel \"#{channel_name}\" to prevent this from happening again?")
+                else:
+                    await dm.send(f"Oops! We've made an error on our end. Please let one of the organizers know (through other means) immediately!")
+                return
+        else: 
+            dm = await ctx.author.create_dm()
+            await dm.send(f"{user_to_alert} is not a valid argument. The available options are: organizer, sponsor, and mentor.")
+            return
+
+        await ctx.send("Request received! Someone will be in touch shortly. ")
+
 
 def setup(bot):
     bot.add_cog(Basic(bot))
