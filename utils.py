@@ -5,13 +5,22 @@ from settings_files import *
 import discord
 from discord.ext import commands
 from asyncio import TimeoutError
+from discord.utils import get
+
 
 def in_bot_commands():
     def predicate(ctx):
-        return ctx.message.channel.name == "bot-commands"
+        user = ctx.message.author
+        role = get(user.guild.roles, name="Organizer")
+        return ctx.message.channel.name == "bot-commands" or (role in ctx.author.roles)
     return commands.check(predicate)
 
+
 vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']
+
+left = "⬅"
+right = "➡"
+
 
 async def paginate_embed(bot, channel, embeds):
     """
@@ -50,6 +59,7 @@ async def paginate_embed(bot, channel, embeds):
         await og_msg.remove_reaction(left, bot.user)
         await og_msg.remove_reaction(right, bot.user)
         return
+
 
 def last_replace(s, old, new):
     li = s.rsplit(old, 1)

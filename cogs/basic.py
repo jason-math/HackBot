@@ -18,10 +18,6 @@ class Basic(commands.Cog):
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
 
     @commands.command()
-    async def lina(self, ctx):
-        await ctx.send("Lina Bad")
-
-    @commands.command()
     @commands.cooldown(1, 60, commands.BucketType.user)
     @in_bot_commands()
     async def ping(self, ctx):
@@ -29,7 +25,7 @@ class Basic(commands.Cog):
             dm = await ctx.author.create_dm()
             await dm.send("Too many arguments for !ping (try just !ping)")
             return
-        await ctx.send(f"Online! {self.bot.latency * 1000:.03f}ms")
+        await ctx.send(f"Online! Latency: {self.bot.latency * 1000:.03f}ms")
 
     @commands.command(help_command="!room @user1 @user2 ...",
                       description="Create a private voice channel with select users")

@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord.utils import get
 import requests
 import json
+from utils import *
 
 
 class Verify(commands.Cog):
@@ -10,6 +11,8 @@ class Verify(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @in_bot_commands()
     async def verify(self, ctx):
         user = ctx.message.author
         msg = ctx.message.content.split(" ")
@@ -24,9 +27,9 @@ class Verify(commands.Cog):
             print(json_format["status"]["confirmed"])
             if json_format["status"]["confirmed"] is True:
                 if json_format["sponsor"] is True:
-                    role = get(user.server.roles, name="Sponsor")
+                    role = get(user.guild.roles, name="Sponsor")
                 else:
-                    role = get(user.server.roles, name="Hacker")
+                    role = get(user.guild.roles, name="Hacker")
                 await self.bot.add_roles(user, role)
                 await channel.send("You have been successfully verified! Happy hacking.")
             else:

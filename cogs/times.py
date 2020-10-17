@@ -1,7 +1,7 @@
 from datetime import timedelta, timezone as tz, datetime as dt
 from functools import partial
 
-from utils import paginate_embed
+from utils import *
 
 import discord
 from discord.ext import commands
@@ -59,7 +59,7 @@ sched = {
         ("10:00 am", "Submission Office Hours", ""),
         ("11:00 am", "Submissions Due!", ""),
         ("11:30 am", "Judging", ""),
-        ("1:00 pm", "Project Fiar", ""),
+        ("1:00 pm", "Project Fair", ""),
         ("2:00 pm", "Closing Ceremony", ""),
     ],
 }
@@ -75,8 +75,7 @@ def time_left(event):
     return (
         (f"{d} day{'s' * bool(d - 1)}, " if d else "")
         + (f"{h} hour{'s' * bool(h - 1)}, " if h else "")
-        + (f"{m} minute{'s' * bool(m - 1)} and " if m else "")
-        + f"{s} second{'s' * bool(s - 1)}"
+        + (f"{m} minute{'s' * bool(m - 1)}" if m else "")
     )
 
 
@@ -84,6 +83,8 @@ class Times(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @in_bot_commands()
     @commands.command(name="when")
     async def hack_times(self, ctx):
         if start > austin():
@@ -95,11 +96,13 @@ class Times(commands.Cog):
         else:
             # compose string accordingly
             breakdown = (
-                "HackTX 2020 " + ("begins " if start > austin() else "ends ") + "in " + time_left(event) + " bb"
+                "HackTX 2020 " + ("begins " if start > austin() else "ends ") + "in " + time_left(event)
             )
 
         await ctx.send(breakdown)
 
+    @commands.cooldown(1, 60, commands.BucketType.guild)
+    @in_bot_commands()
     @commands.command(name="schedule")
     async def schedule(self, ctx):
         embeds = []
@@ -111,18 +114,15 @@ class Times(commands.Cog):
                 embed = discord.Embed(
                     title="HackTX 2020 Schedule :scroll:",
                     description=f"**{full_day}, Oct {day}** \nso much fun to be had :')",
-                    color=16761095,
+                    color=discord.Colour.dark_purple(),
                 )
 
                 for num, event in enumerate(events):
                     event_time, event_name, link = event
-                    # unapologetically use walrus operator
-                    if (
-                        left := dt.strptime(f"2020 Oct {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
-                    ) > austin():  # check if event hasn't already passed
-
+                    left = dt.strptime(f"2020 Oct {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+                    if left > austin():  # check if event hasn't already passed
                         embed.add_field(
-                            name=f"{num + 1}. {event_name}",
+                            name=f"{num + 1}. {event_name} at {event_time}",
                             value=(f"in {time_left(left)}" + (f", [**link**]({link})" if link else "")),
                             inline=False,
                         )
@@ -130,3 +130,7 @@ class Times(commands.Cog):
                 embeds.append(embed)
 
         await paginate_embed(self.bot, ctx.channel, embeds)
+
+
+def setup(bot):
+    bot.add_cog(Times(bot))

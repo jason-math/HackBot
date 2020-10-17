@@ -10,6 +10,10 @@ class Test(commands.Cog):
     @commands.command()
     async def owo(self, ctx):
         await ctx.send(text_to_owo(ctx.message.content))
+
+    @commands.command()
+    async def lina(self, ctx):
+        await ctx.send("Lina Bad")
 # ctx.message.author.name
     """""
     @commands.command()
