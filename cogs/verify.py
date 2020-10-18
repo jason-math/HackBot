@@ -19,7 +19,7 @@ class Verify(commands.Cog):
         token = msg[1]
         data = {'token': token, 'user': user}
         await ctx.message.delete()
-        url = 'http://localhost:3000/auth/discord/verify_user/'
+        url = 'http://register.hacktx.com/auth/discord/verify_user/'
         response = requests.post(url, data=data, verify=False)
         channel = await ctx.author.create_dm()
         if response.ok:

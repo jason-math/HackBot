@@ -2,6 +2,7 @@ from discord.ext import commands
 import discord
 import datetime
 
+
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -13,6 +14,7 @@ class Admin(commands.Cog):
             self.bot.unload_extension(cog)
         except Exception as e:
             await ctx.send("Could not unload cog")
+            print(e)
             return
         await ctx.send("Cog unloaded")
 
@@ -23,6 +25,7 @@ class Admin(commands.Cog):
             self.bot.load_extension(cog)
         except Exception as e:
             await ctx.send("Could not load cog")
+            print(e)
             return
         await ctx.send("Cog loaded")
 
@@ -48,7 +51,8 @@ class Admin(commands.Cog):
         embed = discord.Embed(description="Server Stats", colour=discord.Colour.dark_purple())
         embed.add_field(name="Server Name", value=guild.name, inline=False)
         online = 0
-        for member in guild.members:
+        members = await guild.members
+        for member in members:
             print("%s's status: %s" % (member, member.status))
             if member.status != discord.Status.offline and not member.bot:
                 online += 1

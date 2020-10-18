@@ -10,10 +10,10 @@ class Basic(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, ex):
-        print(ex)
         channel = await ctx.author.create_dm()
         if ctx.message.channel.name == 'bot-commands':
-            await channel.send(ex)
+            print(ex)
+            await channel.send("Something went wrong. We will be fixing that problem shortly.")
         else:
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
 
