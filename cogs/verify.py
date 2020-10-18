@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord.utils import get
 import requests
 import json
+from utils import *
 
 
 class Verify(commands.Cog):
@@ -11,13 +12,15 @@ class Verify(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @in_bot_commands()
     async def verify(self, ctx):
         user = ctx.message.author
         msg = ctx.message.content.split(" ")
         token = msg[1]
         data = {'token': token, 'user': user}
         await ctx.message.delete()
-        url = 'http://localhost:3000/auth/discord/verify_user/'
+        url = 'http://register.hacktx.com/auth/discord/verify_user/'
         response = requests.post(url, data=data, verify=False)
         channel = await ctx.author.create_dm()
         if response.ok:

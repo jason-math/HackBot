@@ -14,6 +14,7 @@ class Admin(commands.Cog):
             self.bot.unload_extension(cog)
         except Exception as e:
             await ctx.send("Could not unload cog")
+            print(e)
             return
         await ctx.send("Cog unloaded")
 
@@ -24,6 +25,7 @@ class Admin(commands.Cog):
             self.bot.load_extension(cog)
         except Exception as e:
             await ctx.send("Could not load cog")
+            print(e)
             return
         await ctx.send("Cog loaded")
 
@@ -40,7 +42,7 @@ class Admin(commands.Cog):
 
     @commands.command(help_command="!stats", description="Get server stats")
     @commands.check(commands.has_role("Organizer"))
-    async def stats(self, ctx, *args):
+    async def stats(self, ctx):
         guild = ctx.guild
 
         num_voice_channels = len(guild.voice_channels)
@@ -48,6 +50,13 @@ class Admin(commands.Cog):
 
         embed = discord.Embed(description="Server Stats", colour=discord.Colour.dark_purple())
         embed.add_field(name="Server Name", value=guild.name, inline=False)
+        online = 0
+        members = await guild.members
+        for member in members:
+            print("%s's status: %s" % (member, member.status))
+            if member.status != discord.Status.offline and not member.bot:
+                online += 1
+        embed.add_field(name="Online hackers", value=str(online), inline=False)
         embed.add_field(name="# Voice Channels", value=str(num_voice_channels))
         embed.add_field(name="# Text Channels", value=str(num_text_channels))
         embed.set_author(name=self.bot.user.name)

@@ -10,26 +10,22 @@ class Basic(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, ex):
-        print(ex)
         channel = await ctx.author.create_dm()
         if ctx.message.channel.name == 'bot-commands':
-            await channel.send(ex)
+            print(ex)
+            await channel.send("Something went wrong. We will be fixing that problem shortly.")
         else:
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
-
-    @commands.command()
-    async def lina(self, ctx):
-        await ctx.send("Lina Bad")
 
     @commands.command()
     @commands.cooldown(1, 60, commands.BucketType.user)
     @in_bot_commands()
     async def ping(self, ctx):
-        if len(ctx.message) > 0:
+        if len(ctx.message.content) > 5:
             dm = await ctx.author.create_dm()
             await dm.send("Too many arguments for !ping (try just !ping)")
             return
-        await ctx.send("Online!")
+        await ctx.send(f"Online! Latency: {self.bot.latency * 1000:.03f}ms")
 
     @commands.command(help_command="!room @user1 @user2 ...",
                       description="Create a private voice channel with select users")

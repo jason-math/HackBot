@@ -19,4 +19,4 @@ class PrivateRoom:
                 return
         else:
             self.active_check = True
-        await asyncio.sleep(10)
+        await asyncio.sleep(600)
