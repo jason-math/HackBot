@@ -16,8 +16,8 @@ class Verify(commands.Cog):
         msg = ctx.message.content.split(" ")
         token = msg[1]
         data = {'token': token, 'user': user}
-        await ctx.message.delete()
         url = 'https://register.hacktx.com/auth/discord/verify_user/'
+        # url = 'http://localhost:3000/auth/discord/verify_user/'
         response = requests.post(url, data=data, verify=False)
         channel = await ctx.author.create_dm()
         if response.ok:
@@ -31,11 +31,15 @@ class Verify(commands.Cog):
                     role = get(user.guild.roles, name="Hacker")
                 await user.add_roles(role)
                 await channel.send("You have been successfully verified! Happy hacking.")
+                await ctx.message.delete()
             else:
                 await channel.send("Verification failed. Please contact an organizer if you think this is incorrect.")
+                await ctx.message.delete()
         else:
+            print(json.loads(response.text))
+            await channel.send(json.loads(response.text)["message"]);
             await channel.send("Verification failed. Please contact an organizer if you think this is incorrect.")
-
+            await ctx.message.delete()
 
 def setup(bot):
     bot.add_cog(Verify(bot))
