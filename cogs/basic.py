@@ -56,10 +56,6 @@ class Basic(commands.Cog):
                     commands.has_role("Mentor") or commands.has_role("Sponsor"))
     @in_bot_commands()
     async def invite(self, ctx):
-        if len(ctx.message) > 0:
-            dm = await ctx.author.create_dm()
-            await dm.send("Too many arguments for !invite (try just !invite)")
-            return
         link = await ctx.channel.create_invite(max_age=300)
         await ctx.send(link)
 
