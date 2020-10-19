@@ -12,7 +12,7 @@ class Verify(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.cooldown(1, 60, commands.BucketType.user)
+    # @commands.cooldown(1, 60, commands.BucketType.user)
     @in_bot_commands()
     async def verify(self, ctx):
         user = ctx.message.author
@@ -21,7 +21,7 @@ class Verify(commands.Cog):
         data = {'token': token, 'user': user}
         url = 'https://register.hacktx.com/auth/discord/verify_user/'
         # url = 'http://localhost:3000/auth/discord/verify_user/'
-        response = requests.post(url, data=data, verify=False)
+        response = requests.post(url, data=data)
         channel = await ctx.author.create_dm()
         if response.ok:
             json_format = json.loads(response.text)
