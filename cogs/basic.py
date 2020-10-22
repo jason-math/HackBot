@@ -17,7 +17,9 @@ class Basic(commands.Cog):
         else:
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
 
-    @commands.command()
+    @commands.command(help_command="!ping",
+                      description="Ping the bot",
+                      help="Ping the bot")
     @commands.cooldown(1, 60, commands.BucketType.user)
     @in_bot_commands()
     async def ping(self, ctx):
@@ -28,7 +30,8 @@ class Basic(commands.Cog):
         await ctx.send(f"Online! Latency: {self.bot.latency * 1000:.03f}ms")
 
     @commands.command(help_command="!room @user1 @user2 ...",
-                      description="Create a private voice channel with select users")
+                      description="Create a private voice channel with select users",
+                      help="Create a private voice channel with select users")
     @commands.guild_only()
     @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.check_any(commands.has_role("Hacker"), commands.has_role("Organizer"),
@@ -59,7 +62,7 @@ class Basic(commands.Cog):
         link = await ctx.channel.create_invite(max_age=300)
         await ctx.send(link)
 
-    @commands.command(help_command="!request <organizer/mentor/sponsor> [company_name] message", help="Request help from an organizer, sponsor, or mentor. If sponsor is selected, please specific the company name immediately after. Your message will be shown to the appropriate group and they will be in touch with you shortly.")
+    @commands.command(help_command="!request <organizer/mentor/sponsor> [company_name] message", help="Request help from an organizer, sponsor, or mentor.")
     @commands.guild_only()
     @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.check_any(commands.has_role("Hacker"), commands.has_role("Organizer"),
@@ -78,7 +81,7 @@ class Basic(commands.Cog):
             # also assumes there is "#mentors" and "#organizers"
             channel_to_alert = discord.utils.get(guild.text_channels, name=channel_name)
             
-            if channel_to_alert != None:
+            if channel_to_alert is not None:
                 await channel_to_alert.send(f"{channel_to_alert.mention} From {author.mention}: {message}")
             else:
                 # should never get here except if company is mispelled, as long as we have "#organizers" and "#mentors"

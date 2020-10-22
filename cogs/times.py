@@ -26,11 +26,12 @@ sched = {
         ("7:00 am", "Teambuilding", ""),
         ("8:00 am", "Beginner Intro to Hackathons", ""),
         ("9:00 am", "Beginner Intro to Git", ""),
-        ("9:00 am", "Bob Ross MS Paint Party", ""),
+        ("9:30 am", "Bob Ross MS Paint Party", ""),
         ("10:00 am", "Beginner Mobile Dev", ""),
         ("10:00 am", "Intro to GCP", ""),
         ("11:00 am", "Beginner Web Dev", ""),
         ("11:00 am", "EchoAR Workshop", ""),
+        ("11:00 am", "Guest Speaker: Anant Bhardwaj", ""),
         ("12:00 pm", "Intro to ML w/ MLDS", ""),
         ("12:00 pm", "Industry Panel", ""),
         ("1:00 pm", "Microsoft Event", ""),
@@ -85,7 +86,11 @@ class Times(commands.Cog):
 
     @commands.cooldown(1, 60, commands.BucketType.user)
     @in_bot_commands()
-    @commands.command(name="when")
+    @commands.command(name="when",
+                      help_command="!when",
+                      description="Check when the hackathon starts or ends",
+                      help="Check when the hackathon starts or ends"
+                      )
     async def hack_times(self, ctx):
         if start > austin():
             event = start  # hackathon yet to start
@@ -103,7 +108,11 @@ class Times(commands.Cog):
 
     @commands.cooldown(1, 60, commands.BucketType.guild)
     @in_bot_commands()
-    @commands.command(name="schedule")
+    @commands.command(name="schedule",
+                      help_command="!schedule",
+                      description="See the hackathon schedule",
+                      help="See the hackathon schedule"
+                      )
     async def schedule(self, ctx):
         embeds = []
 
