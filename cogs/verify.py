@@ -27,7 +27,7 @@ class Verify(commands.Cog):
             json_format = json.loads(response.text)
             print(json_format)
             if json_format["status"]["confirmed"] is True:
-                print(user.guild.roles);
+                print(user.guild.roles)
                 if json_format["sponsor"] is True:
                     role = get(user.guild.roles, name="Sponsor")
                 else:
