@@ -1,4 +1,5 @@
 from discord.ext import commands
+from discord.utils import get
 import discord
 import datetime
 
@@ -44,7 +45,6 @@ class Admin(commands.Cog):
     @commands.has_role("Organizer")
     async def stats(self, ctx):
         guild = ctx.guild
-
         num_voice_channels = len(guild.voice_channels)
         num_text_channels = len(guild.text_channels)
         embed = discord.Embed(description="Server Stats", colour=discord.Colour.dark_purple())
@@ -52,8 +52,8 @@ class Admin(commands.Cog):
         online = 0
         verified = 0
         total = 0
-        hacker = get(user.guild.roles, name="Hacker")
-        members = await guild.members
+        hacker = get(guild.roles, name="Hacker")
+        members = guild.members
         for member in members:
             print("%s's status: %s" % (member, member.status))
             if member.status != discord.Status.offline and not member.bot:
