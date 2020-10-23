@@ -14,6 +14,7 @@ class Test(commands.Cog):
     @commands.command()
     async def lina(self, ctx):
         await ctx.send("Lina Bad")
+
 # ctx.message.author.name
     """""
     @commands.command()
@@ -24,7 +25,12 @@ class Test(commands.Cog):
         else:
             await ctx.send("%s" %wave)
     """""
-
+    # @commands.command(help_command="!list", description="List all public channels")
+    # async def list(ctx, event):
+    #     guild = ctx.guild
+    #     channel_list = guild.voice_channels
+        
+    #     await ctx.send("Available channels: " + channel_list)
 
 def setup(bot):
     bot.add_cog(Test(bot))

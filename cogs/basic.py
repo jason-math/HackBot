@@ -7,7 +7,6 @@ class Basic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.Cog.listener()
     async def on_command_error(self, ctx, ex):
         channel = await ctx.author.create_dm()
@@ -16,6 +15,46 @@ class Basic(commands.Cog):
             await channel.send("Something went wrong. We will be fixing that problem shortly.")
         else:
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
+
+    @commands.command(help_command="!list", description="List all public voice and text channels")
+    @in_bot_commands()
+    async def list(self, ctx):
+        guild = ctx.guild
+        voice_channel_list = [channel.name for channel in guild.voice_channels]
+        text_channel_list = [channel.name for channel in guild.text_channels]
+
+        await ctx.send("Available public voice channels: " + str(voice_channel_list)[1:-1])
+        await ctx.send("Available public text channels: " + str(text_channel_list)[1:-1])
+
+    @commands.command(help_command="!join <channel_name>", description="Join related channels")
+    @commands.check_any(commands.has_role("Hacker"), commands.has_role("Organizer"),
+                    commands.has_role("Mentor"), commands.has_role("Sponsor"))
+    @in_bot_commands()
+    async def join(self, ctx, args):
+        guild = ctx.guild
+        author = ctx.author
+
+        channel = None
+        for available_channel in guild.channels:
+            if available_channel.name == args:
+                channel = available_channel
+                break
+        if channel != None:
+            await author.move_to(channel)
+            await ctx.send("Joined channel!")
+        else:
+            await ctx.send("No such channel exists!")
+        
+
+    @commands.command(help_command="!leave <channel_name>", description="Leave related channels")
+    @commands.check_any(commands.has_role("Hacker"), commands.has_role("Organizer"),
+                    commands.has_role("Mentor"), commands.has_role("Sponsor"))
+    @in_bot_commands()
+    async def leave(self, ctx, args):
+        guild = ctx.guild
+        author = ctx.author
+
+        await author.move_to(None)
 
     @commands.command()
     @commands.cooldown(1, 60, commands.BucketType.user)
