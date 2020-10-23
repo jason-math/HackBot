@@ -20,10 +20,10 @@ austin = partial(dt.now, tz=cst)  # gives current time in austin, use instead of
 sched = {
     23: [
         ("10:00 pm", "Opening Ceremony", ""),
-        ("10:30 pm", "Teambuilding", ""),
+        ("10:30 pm", "Teambuilding #1", ""),
     ],
     24: [
-        ("7:00 am", "Teambuilding", ""),
+        ("7:00 am", "Teambuilding #2", ""),
         ("8:00 am", "Beginner Intro to Hackathons", ""),
         ("9:00 am", "Beginner Intro to Git", ""),
         ("9:30 am", "Bob Ross MS Paint Party", ""),
@@ -80,6 +80,19 @@ def time_left(event):
     )
 
 
+def time_elapsed(event):
+    # returns string with time since event started
+    diff = austin() - event
+    d = diff.days
+    h, m = divmod(diff.seconds, 3600)  # 3600 seconds in an hour
+    m, s = divmod(m, 60)
+
+    return (
+        (f"{d} day{'s' * bool(d - 1)}, " if d else "")
+        + (f"{h} hour{'s' * bool(h - 1)}, " if h else "")
+        + (f"{m} minute{'s' * bool(m - 1)}" if m else "")
+    )
+
 class Times(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -127,12 +140,12 @@ class Times(commands.Cog):
                 )
 
                 for num, event in enumerate(events):
-                    event_time, event_name, link = event
+                    event_time, event_name, link = event                  
                     left = dt.strptime(f"2020 Oct {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
                     if left > austin():  # check if event hasn't already passed
                         embed.add_field(
                             name=f"{num + 1}. {event_name} at {event_time}",
-                            value=(f"in {time_left(left)}" + (f", [**link**]({link})" if link else "")),
+                            value=(f"in {time_left(left)} CT" + (f", [**link**]({link})" if link else "")),
                             inline=False,
                         )
 
@@ -140,6 +153,87 @@ class Times(commands.Cog):
 
         await paginate_embed(self.bot, ctx.channel, embeds)
 
+    @commands.cooldown(1, 60, commands.BucketType.guild)
+    @in_bot_commands()
+    @commands.command(name="soon")
+    async def schedule(self, ctx):
+        embeds = []
+
+        val = 1
+        for day, events in sched.items():
+            if day >= austin().day:
+                full_day = ["Friday", "Saturday", "Sunday"][day - 23]  # 23 since that was the first day
+
+                embed = discord.Embed(
+                    title="Upcoming Events! :alarm_clock:",
+                    description="See what's happening in the next hour!",
+                    color=discord.Colour.dark_purple(),
+                )
+
+                #assumes events in list are in chronological order
+                for num, event in enumerate(events):
+                    event_time, event_name, link = event                  
+                    left = dt.strptime(f"2020 Oct {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+                    if left > austin(): #check that event hasn't passed
+                        if (dt.__sub__(left, austin()).total_seconds()) <= 60:  # event happening in the next minute
+                            text = f"{event_name} starting now!"
+                            embed.add_field(
+                                name=f"{val}. {event_name} at {event_time} CT",
+                                value=("in < 1 minute" + (f", [**link**]({link})" if link else "")),
+                                inline=False,
+                            )
+                        elif (dt.__sub__(left, austin()).total_seconds()) <= 3600:  # event happening in the next hour 
+                            embed.add_field(
+                                name=f"{val}. {event_name} at {event_time} CT",
+                                value=(f"in {time_left(left)}" + (f", [**link**]({link})" if link else "")),
+                                inline=False,
+                            )
+                            val = val + 1
+                        else: 
+                            break
+
+                if val == 1: 
+                    embed.add_field(
+                        name="No upcoming events!",
+                        value=("Check the schedule to see future events."),
+                        inline=False,
+                    )
+                embeds.append(embed)
+                break
+
+        
+            
+        await paginate_embed(self.bot, ctx.channel, embeds)
+    
+    
+    @commands.cooldown(1, 60, commands.BucketType.guild)
+    @in_bot_commands()
+    @commands.command(name="time")
+    async def time(self, ctx, *, contents):
+
+        text = "Oops! This event isn't on the schedule!" 
+        for day, events in sched.items():
+
+            for num, event in enumerate(events):
+                event_time, event_name, link = event             
+                if(contents == event_name):
+                    left = dt.strptime(f"2020 Oct {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+                    if left > austin(): # check if event hasn't already passed 
+                        text = f"{event_name} starts at {event_time} CT (in {time_left(left)})"
+                        # if event is starting within one minute, otherwise 
+                        if (dt.__sub__(left, austin()).total_seconds()) <= 60:  
+                            text = f"{event_name} starts now at {event_time} CT!"
+
+                    else:
+                        text = f"{event_name} has already passed! Try the \"!soon\" command to see what's coming up."
+                        #event might be going on if it started within 2 hrs ago
+                        if (dt.__sub__(austin(), left).total_seconds()) <= (2*3600): 
+                            text = f"{event_name} started at {event_time} CT ({time_elapsed(left)} ago)!"
+
+
+                    break
+ 
+        await ctx.send(text)
 
 def setup(bot):
     bot.add_cog(Times(bot))
