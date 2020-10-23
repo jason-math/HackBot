@@ -1,7 +1,7 @@
 from discord.ext import commands
 from privaterooms import *
 from utils import *
-
+from discord import CategoryChannel
 
 class Basic(commands.Cog):
     def __init__(self, bot):
@@ -10,9 +10,9 @@ class Basic(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, ex):
         channel = await ctx.author.create_dm()
+        print(ex)
         if ctx.message.channel.name == 'bot-commands':
-            print(ex)
-            await channel.send("Something went wrong. We will be fixing that problem shortly.")
+            await channel.send("Something went wrong. Please DM an organizer if you believe this is not intended.")
         else:
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
 
@@ -44,19 +44,20 @@ class Basic(commands.Cog):
             await ctx.send("Joined channel!")
         else:
             await ctx.send("No such channel exists!")
-        
 
     @commands.command(help_command="!leave <channel_name>", description="Leave related channels")
     @commands.check_any(commands.has_role("Hacker"), commands.has_role("Organizer"),
                     commands.has_role("Mentor"), commands.has_role("Sponsor"))
     @in_bot_commands()
     async def leave(self, ctx, args):
-        guild = ctx.guild
         author = ctx.author
 
         await author.move_to(None)
 
     @commands.command()
+    @commands.command(help_command="!ping",
+                      description="Ping the bot",
+                      help="Ping the bot")
     @commands.cooldown(1, 60, commands.BucketType.user)
     @in_bot_commands()
     async def ping(self, ctx):
@@ -67,7 +68,8 @@ class Basic(commands.Cog):
         await ctx.send(f"Online! Latency: {self.bot.latency * 1000:.03f}ms")
 
     @commands.command(help_command="!room @user1 @user2 ...",
-                      description="Create a private voice channel with select users")
+                      description="Create a private voice channel with select users",
+                      help="Create a private voice channel with select users")
     @commands.guild_only()
     @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.check_any(commands.has_role("Hacker"), commands.has_role("Organizer"),
@@ -88,7 +90,7 @@ class Basic(commands.Cog):
             await room.active_checker()
         await ctx.send("%s's room deleted due to inactivity" % author.name)
 
-    @commands.command(help_command="!invite", description="Create a server invite to share with others")
+    @commands.command(help_command="!invite", description="Create a server invite to share with others", help="Create a server invite for a friend.")
     @commands.guild_only()
     @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.check(commands.has_role("Hacker") or commands.has_role("Organizer") or
@@ -98,7 +100,31 @@ class Basic(commands.Cog):
         link = await ctx.channel.create_invite(max_age=300)
         await ctx.send(link)
 
-    @commands.command(help_command="!request <organizer/mentor/sponsor> [company_name] message", help="Request help from an organizer, sponsor, or mentor. If sponsor is selected, please specific the company name immediately after. Your message will be shown to the appropriate group and they will be in touch with you shortly.")
+    @commands.command(help_command="!sponsors", description="See our list of sponsors.",
+                      help="See our list of sponsors.")
+    @commands.guild_only()
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @commands.check(commands.has_role("Hacker") or commands.has_role("Organizer") or
+                    commands.has_role("Mentor") or commands.has_role("Sponsor"))
+    @in_bot_commands()
+    async def sponsors(self, ctx):
+        guild = ctx.guild
+        sponsor_category = None
+        for category in guild.categories:
+            if category.name == "Sponsors":
+                sponsor_category = category
+                break
+        if sponsor_category is None:
+            return
+        message = ""
+        for channel in sponsor_category.channels:
+            if channel.name != "sponsor-general":
+                message += f"{channel}, "
+        message = message[:-2]
+        await ctx.send(message)
+
+
+    @commands.command(help_command="!request <organizer/mentor/sponsor> [company_name] message", help="Request help from an organizer, sponsor, or mentor.")
     @commands.guild_only()
     @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.check_any(commands.has_role("Hacker"), commands.has_role("Organizer"),
@@ -117,7 +143,7 @@ class Basic(commands.Cog):
             # also assumes there is "#mentors" and "#organizers"
             channel_to_alert = discord.utils.get(guild.text_channels, name=channel_name)
             
-            if channel_to_alert != None:
+            if channel_to_alert is not None:
                 await channel_to_alert.send(f"{channel_to_alert.mention} From {author.mention}: {message}")
             else:
                 # should never get here except if company is mispelled, as long as we have "#organizers" and "#mentors"

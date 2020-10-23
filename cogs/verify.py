@@ -11,7 +11,9 @@ class Verify(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(help_command="!verify <toke>",
+                      description="Verify your HackTX admission.",
+                      help="Verify your HackTX admission.")
     # @commands.cooldown(1, 60, commands.BucketType.user)
     @in_bot_commands()
     async def verify(self, ctx):
@@ -27,7 +29,7 @@ class Verify(commands.Cog):
             json_format = json.loads(response.text)
             print(json_format)
             if json_format["status"]["confirmed"] is True:
-                print(user.guild.roles);
+                print(user.guild.roles)
                 if json_format["sponsor"] is True:
                     role = get(user.guild.roles, name="Sponsor")
                 else:
@@ -40,7 +42,7 @@ class Verify(commands.Cog):
                 await ctx.message.delete()
         else:
             print(json.loads(response.text))
-            await channel.send(json.loads(response.text)["message"]);
+            await channel.send(json.loads(response.text)["message"])
             await channel.send("Verification failed. Please contact an organizer if you think this is incorrect.")
             await ctx.message.delete()
 
