@@ -131,12 +131,12 @@ class Times(commands.Cog):
                 )
 
                 for num, event in enumerate(events):
-                    event_time, event_name, link = event                  
+                    event_time, event_name, link = event
                     left = dt.strptime(f"2020 Oct {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
                     if left > austin():  # check if event hasn't already passed
                         embed.add_field(
                             name=f"{num + 1}. {event_name} at {event_time}",
-                            value=(f"in {time_left(left)} CT" + (f", [**link**]({link})" if link else "")),
+                            value=(f"in {time_left(left)}" + (f", [**link**]({link})" if link else "")),
                             inline=False,
                         )
 
@@ -192,8 +192,6 @@ class Times(commands.Cog):
                 embeds.append(embed)
                 break
 
-        
-            
         await paginate_embed(self.bot, ctx.channel, embeds)
     
     
@@ -220,7 +218,6 @@ class Times(commands.Cog):
                         #event might be going on if it started within 2 hrs ago
                         if (dt.__sub__(austin(), left).total_seconds()) <= (2*3600): 
                             text = f"{event_name} started at {event_time} CT ({time_elapsed(left)} ago)!"
-
 
                     break
  
