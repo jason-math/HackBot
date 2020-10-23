@@ -155,8 +155,12 @@ class Times(commands.Cog):
 
     @commands.cooldown(1, 60, commands.BucketType.guild)
     @in_bot_commands()
-    @commands.command(name="soon")
-    async def schedule(self, ctx):
+    @commands.command(name="soon",
+                      help_command="!soon",
+                      description="Check on upcoming events.",
+                      help="Check on upcoming events."
+                      )
+    async def soon(self, ctx):
         embeds = []
 
         val = 1
@@ -195,7 +199,7 @@ class Times(commands.Cog):
                 if val == 1: 
                     embed.add_field(
                         name="No upcoming events!",
-                        value=("Check the schedule to see future events."),
+                        value="Check the schedule to see future events.",
                         inline=False,
                     )
                 embeds.append(embed)
@@ -208,7 +212,11 @@ class Times(commands.Cog):
     
     @commands.cooldown(1, 60, commands.BucketType.guild)
     @in_bot_commands()
-    @commands.command(name="time")
+    @commands.command(name="time",
+                      help_command="!time",
+                      description="Check when a certain event is",
+                      help="Check when a certain event is"
+                      )
     async def time(self, ctx, *, contents):
 
         text = "Oops! This event isn't on the schedule!" 
