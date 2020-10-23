@@ -1,7 +1,7 @@
 from discord.ext import commands
 from privaterooms import *
 from utils import *
-
+from discord import CategoryChannel
 
 class Basic(commands.Cog):
     def __init__(self, bot):
@@ -11,9 +11,9 @@ class Basic(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, ex):
         channel = await ctx.author.create_dm()
+        print(ex)
         if ctx.message.channel.name == 'bot-commands':
-            print(ex)
-            await channel.send("Something went wrong. We will be fixing that problem shortly.")
+            await channel.send("Something went wrong. Please DM an organizer if you believe this is not intended.")
         else:
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
 
@@ -52,7 +52,7 @@ class Basic(commands.Cog):
             await room.active_checker()
         await ctx.send("%s's room deleted due to inactivity" % author.name)
 
-    @commands.command(help_command="!invite", description="Create a server invite to share with others")
+    @commands.command(help_command="!invite", description="Create a server invite to share with others", help="Create a server invite for a friend.")
     @commands.guild_only()
     @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.check(commands.has_role("Hacker") or commands.has_role("Organizer") or
@@ -61,6 +61,30 @@ class Basic(commands.Cog):
     async def invite(self, ctx):
         link = await ctx.channel.create_invite(max_age=300)
         await ctx.send(link)
+
+    @commands.command(help_command="!sponsors", description="See our list of sponsors.",
+                      help="See our list of sponsors.")
+    @commands.guild_only()
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @commands.check(commands.has_role("Hacker") or commands.has_role("Organizer") or
+                    commands.has_role("Mentor") or commands.has_role("Sponsor"))
+    @in_bot_commands()
+    async def sponsors(self, ctx):
+        guild = ctx.guild
+        sponsor_category = None
+        for category in guild.categories:
+            if category.name == "Sponsors":
+                sponsor_category = category
+                break
+        if sponsor_category is None:
+            return
+        message = ""
+        for channel in sponsor_category.channels:
+            if channel.name != "sponsor-general":
+                message += f"{channel}, "
+        message = message[:-2]
+        await ctx.send(message)
+
 
     @commands.command(help_command="!request <organizer/mentor/sponsor> [company_name] message", help="Request help from an organizer, sponsor, or mentor.")
     @commands.guild_only()
