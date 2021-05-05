@@ -2,20 +2,22 @@ from discord.ext import commands
 from privaterooms import *
 from utils import *
 from discord import CategoryChannel
+import asyncio
 
 class Basic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.Cog.listener()
     async def on_command_error(self, ctx, ex):
         channel = await ctx.author.create_dm()
         print(ex)
-        if ctx.message.channel.name == 'bot-commands':
-            await channel.send("Something went wrong. Please DM an organizer if you believe this is not intended.")
-        else:
+        if ctx.message.channel.name != 'bot-commands':
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
+        elif isinstance(ex, commands.CommandOnCooldown):
+            await channel.send("You are on cooldown. Please try again shortly")
+        else:
+            await channel.send("Something went wrong. Please DM an organizer if you believe this is not intended.")
 
     @commands.command(help_command="!ping",
                       description="Ping the bot",
@@ -40,17 +42,24 @@ class Basic(commands.Cog):
     async def room(self, ctx):
         guild = ctx.guild
         author = ctx.author
-        room = PrivateRoom()
+        active_check = True
         if len(ctx.message.mentions) == 0:
             dm = await ctx.author.create_dm()
             await dm.send("Please specify 1 or more specific members (using @) when using !room")
             return
         channel = await create_channel(guild, author, ctx.message.mentions)
-        await room.assign_channel(channel)
         await ctx.send("Room created!")
-        while room.private_channel is not None:
-            await room.active_checker()
-        await ctx.send("%s's room deleted due to inactivity" % author.name)
+        while True:
+            if len(channel.members) == 0:
+                if active_check is True:
+                    active_check = False
+                else:
+                    await channel.delete()
+                    await ctx.send("%s's room deleted due to inactivity" % author.name)
+                    return
+            else:
+                active_check = True
+            await asyncio.sleep(30)
 
     @commands.command(help_command="!invite", description="Create a server invite to share with others", help="Create a server invite for a friend.")
     @commands.guild_only()
