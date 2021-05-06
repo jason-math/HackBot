@@ -1,8 +1,8 @@
 from discord.ext import commands
-from privaterooms import *
 from utils import *
 from discord import CategoryChannel
 import asyncio
+
 
 class Basic(commands.Cog):
     def __init__(self, bot):
@@ -15,7 +15,7 @@ class Basic(commands.Cog):
         if ctx.message.channel.name != 'bot-commands':
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
         elif isinstance(ex, commands.CommandOnCooldown):
-            await channel.send("You are on cooldown. Please try again shortly")
+            await channel.send(ex)
         else:
             await channel.send("Something went wrong. Please DM an organizer if you believe this is not intended.")
 

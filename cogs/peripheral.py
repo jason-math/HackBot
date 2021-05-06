@@ -10,13 +10,13 @@ class Peripheral(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        message_id = 839501995958468680
+        message_id = 839627125577351168
         user = payload.user_id
         member = payload.member
         
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g : g.id == guild_id, self.bot.guilds)
-        role = get(member.guild.roles, name="Member")
+        role = get(member.guild.roles, name="Hacker")
         
         if not payload.guild_id:
             return
@@ -25,18 +25,15 @@ class Peripheral(commands.Cog):
             if payload.message_id == message_id:
                 if str(payload.emoji) == "✅":
                     await member.add_roles(role)
-        
-        
+
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
-        message_id = 839501995958468680
+        message_id = 839627125577351168
         user = payload.user_id
-        
-        
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g : g.id == guild_id, self.bot.guilds)
         member = await guild.fetch_member(payload.user_id)
-        role = get(member.guild.roles, name="Member")
+        role = get(member.guild.roles, name="Hacker")
 
         if not payload.guild_id:
             return

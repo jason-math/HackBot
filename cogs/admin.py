@@ -9,7 +9,7 @@ class Admin(commands.Cog):
         self.bot = bot
 
     @commands.command(help_command="!unload <cog>", description="Unload a cog")
-    @commands.has_role("Organizer")
+    @commands.has_role("Tech")
     async def unload(self, ctx, cog: str):
         try:
             self.bot.unload_extension(cog)
@@ -20,7 +20,7 @@ class Admin(commands.Cog):
         await ctx.send("Cog unloaded")
 
     @commands.command(help_command="!load <cog>", description="Load a cog")
-    @commands.has_role("Organizer")
+    @commands.has_role("Tech")
     async def load(self, ctx, cog: str):
         try:
             self.bot.load_extension(cog)
@@ -31,7 +31,7 @@ class Admin(commands.Cog):
         await ctx.send("Cog loaded")
 
     @commands.command(help_command="!reload <cog>", description="Reload a cog")
-    @commands.has_role("Organizer")
+    @commands.has_role("Tech")
     async def reload(self, ctx, cog: str):
         try:
             self.bot.unload_extension(cog)
@@ -57,7 +57,7 @@ class Admin(commands.Cog):
         sponsors = 0
         hacker = get(guild.roles, name="Hacker")
         mentor = get(guild.roles, name="Mentor")
-        sponsor = get(guild.roles, name="Sponsor")
+        sponsor = get(guild.roles, name="8VC")
         members = guild.members
         for member in members:
             # print("%s's status: %s" % (member, member.status))
@@ -71,8 +71,8 @@ class Admin(commands.Cog):
                 mentors += 1
             if not member.bot:
                 total += 1
-            if len(member.roles) == 1:
-                unverified += 1
+            #if len(member.roles) == 1:
+                #unverified += 1
         embed.add_field(name="Online members", value=str(online))
         embed.add_field(name="Total members", value=str(total))
         embed.add_field(name="--------------------", value="--------------------", inline=False)
