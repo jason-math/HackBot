@@ -10,7 +10,7 @@ from discord.ext import commands
 cst = tz(timedelta(hours=-5))  # cst is 5h behind utc
 
 # hackathon start and end times
-start = dt.fromtimestamp(1620524700, tz=cst)  # 8:45am cst may 8 2021
+start = dt.fromtimestamp(1620481500, tz=cst)  # 8:45am cst may 8 2021
 end = dt.fromtimestamp(1620579600, tz=cst)  # 12pm cst may 9 2021
 
 austin = partial(dt.now, tz=cst)  # gives current time in austin, use instead of dt.now() for uniformity
@@ -20,22 +20,22 @@ austin = partial(dt.now, tz=cst)  # gives current time in austin, use instead of
 sched = {
     8: [
         ("8:45 am", "Opening Ceremony", ""),
-        ("9:00 am", "Tech track Ideation Workshop", "http://utexas.zoom.us/my/balloon"),
-        ("9:00 am", "Idea track Ideation with A4C", "http://utexas.zoom.us/my/stars"),
-        ("10:00 am", "Intro to Git/Collaboration", "http://utexas.zoom.us/my/mountain"),
-        ("10:00 am", "Intro to social entrepreneurship/design thinking with SELL", "http://utexas.zoom.us/my/cloud"),
-        ("11:00 am", "Programming Basics", "http://utexas.zoom.us/my/balloon"),
-        ("11:00 am", "TPEO Project Management", "http://utexas.zoom.us/my/stars"),
-        ("12:00 pm", "Web Dev", "http://utexas.zoom.us/my/mountain"),
-        ("12:00 pm", "Civic Tech Project Talk", "http://utexas.zoom.us/my/cloud"),
-        ("1:00 pm", "App Dev", "http://utexas.zoom.us/my/balloon"),
-        ("1:00 pm", "Mental Health at Hackathons with A4C", "http://utexas.zoom.us/my/stars"),
-        ("2:00 pm", "Databases", "http://utexas.zoom.us/my/mountain"),
-        ("3:00 pm", "Tech & Society with A4C", "http://utexas.zoom.us/my/balloon"),
-        ("5:00 pm", "Bob Ross Painting", "http://utexas.zoom.us/my/mountain"),
+        ("9:00 am", "Tech track Ideation Workshop", "http://utexas.zoom.us/my/balloon.room"),
+        ("9:00 am", "Idea track Ideation with A4C", "http://utexas.zoom.us/my/stars.room"),
+        ("10:00 am", "Intro to Git/Collaboration", "http://utexas.zoom.us/my/mountain.room"),
+        ("10:00 am", "Intro to social entrepreneurship/design thinking with SELL", "http://utexas.zoom.us/my/cloud.room"),
+        ("11:00 am", "Programming Basics", "http://utexas.zoom.us/my/balloon.room"),
+        ("11:00 am", "TPEO Project Management", "http://utexas.zoom.us/my/stars.room"),
+        ("12:00 pm", "Web Dev", "http://utexas.zoom.us/my/mountain.room"),
+        ("12:00 pm", "Civic Tech Project Talk", "http://utexas.zoom.us/my/cloud.room"),
+        ("1:00 pm", "App Dev", "http://utexas.zoom.us/my/balloon.room"),
+        ("1:00 pm", "Mental Health at Hackathons with A4C", "http://utexas.zoom.us/my/stars.room"),
+        ("2:00 pm", "Databases", "http://utexas.zoom.us/my/mountain.room"),
+        ("3:00 pm", "Tech & Society with A4C", "http://utexas.zoom.us/my/balloon.room"),
+        ("5:00 pm", "Bob Ross Painting", "http://utexas.zoom.us/my/mountain.room"),
         ("9:00 pm", "Submissions Due", ""),
-        ("9:00 pm", "Trivia", "http://utexas.zoom.us/my/cloud"),
-        ("10:00 pm", "Games", "http://utexas.zoom.us/my/cloud"),
+        ("9:00 pm", "Trivia", "http://utexas.zoom.us/my/cloud.room"),
+        ("10:00 pm", "Games", "http://utexas.zoom.us/my/cloud.room"),
     ],
     9: [
         ("10:00 am", "Judging", ""),

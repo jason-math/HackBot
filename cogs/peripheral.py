@@ -39,6 +39,7 @@ class Peripheral(commands.Cog):
             return
 
         if payload is not None:
+            print(payload.message_id)
             if payload.message_id == message_id:
                 if str(payload.emoji) == "✅":
                     await member.remove_roles(role)
