@@ -57,28 +57,28 @@ class Admin(commands.Cog):
         sponsors = 0
         hacker = get(guild.roles, name="Hacker")
         mentor = get(guild.roles, name="Mentor")
-        sponsor = get(guild.roles, name="8VC")
+        sponsor = get(guild.roles, name="Sponsor")
         members = guild.members
         for member in members:
             # print("%s's status: %s" % (member, member.status))
             if member.status != discord.Status.offline and not member.bot:
                 online += 1
-            #if hacker in member.roles:
-                #verified += 1
+            if hacker in member.roles:
+                verified += 1
             if sponsor in member.roles:
                 sponsors += 1
             if mentor in member.roles:
                 mentors += 1
             if not member.bot:
                 total += 1
-            #if len(member.roles) == 1:
-                #unverified += 1
+            if len(member.roles) == 1:
+                unverified += 1
         embed.add_field(name="Online members", value=str(online))
         embed.add_field(name="Total members", value=str(total))
         embed.add_field(name="--------------------", value="--------------------", inline=False)
-        #embed.add_field(name="Verified hackers", value=str(verified))
-        #embed.add_field(name="Unverified hackers", value=str(unverified))
-        #embed.add_field(name="--------------------", value="--------------------", inline=False)
+        embed.add_field(name="Verified hackers", value=str(verified))
+        embed.add_field(name="Unverified hackers", value=str(unverified))
+        embed.add_field(name="--------------------", value="--------------------", inline=False)
         embed.add_field(name="Mentors", value=str(mentors))
         embed.add_field(name="Sponsors", value=str(sponsors))
 
