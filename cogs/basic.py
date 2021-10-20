@@ -12,10 +12,15 @@ class Basic(commands.Cog):
     async def on_command_error(self, ctx, ex):
         channel = await ctx.author.create_dm()
         print(ex)
-        if ctx.message.channel.name == 'bot-commands':
-            await channel.send("Something went wrong. Please DM an organizer if you believe this is not intended.")
-        else:
+        if isinstance(ex, commands.CommandOnCooldown):
+            await channel.send(ex)
+        elif ctx.message.channel.name != 'bot-commands':
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
+        else:
+            await channel.send(ex)
+            jason = self.bot.get_user(173263365777522688)
+            dm = await jason.create_dm()
+            await dm.send(ex)
 
     @commands.command(help_command="!ping",
                       description="Ping the bot",

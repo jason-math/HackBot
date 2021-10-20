@@ -10,58 +10,36 @@ from discord.ext import commands
 cst = tz(timedelta(hours=-5))  # cst is 5h behind utc
 
 # hackathon start and end times
-start = dt.fromtimestamp(1603508400, tz=cst)  # 9pm cst oct 2 2020
-end = dt.fromtimestamp(1603641600, tz=cst)  # 9am cst oct 4 2020
+start = dt.fromtimestamp(1635613200, tz=cst)  # 12pm cst oct 30 2021
+end = dt.fromtimestamp(1635699600, tz=cst)  # 12pm cst oct 31 2021
 
 austin = partial(dt.now, tz=cst)  # gives current time in austin, use instead of dt.now() for uniformity
 
-# Oct 2-4, 2020
+# October 30-31, 2021
 # event format is (time, event name, event link if available)
 sched = {
-    23: [
-        ("10:00 pm", "Opening Ceremony", ""),
-        ("10:30 pm", "Teambuilding #1", ""),
+    30: [
+        ("8:45 am", "Opening Ceremony", ""),
+        ("9:00 am", "Tech track Ideation Workshop", "http://utexas.zoom.us/my/balloon.room"),
+        ("9:00 am", "Idea track Ideation with A4C", "http://utexas.zoom.us/my/stars.room"),
+        ("10:00 am", "Intro to Git/Collaboration", "http://utexas.zoom.us/my/mountain.room"),
+        ("10:00 am", "Intro to social entrepreneurship/design thinking with SELL", "http://utexas.zoom.us/my/cloud.room"),
+        ("11:00 am", "Programming Basics", "http://utexas.zoom.us/my/balloon.room"),
+        ("11:00 am", "TPEO Project Management", "http://utexas.zoom.us/my/stars.room"),
+        ("12:00 pm", "App Dev", "http://utexas.zoom.us/my/mountain.room"),
+        ("12:00 pm", "Civic Tech Project Talk", "http://utexas.zoom.us/my/cloud.room"),
+        ("1:00 pm", "Web Dev", "http://utexas.zoom.us/my/balloon.room"),
+        ("1:00 pm", "Mental Health at Hackathons with A4C", "http://utexas.zoom.us/my/stars.room"),
+        ("2:00 pm", "Databases", "http://utexas.zoom.us/my/mountain.room"),
+        ("3:00 pm", "Tech & Society with A4C", "http://utexas.zoom.us/my/balloon.room"),
+        ("5:00 pm", "Bob Ross Painting", "http://utexas.zoom.us/my/mountain.room"),
+        ("9:00 pm", "Submissions Due", ""),
+        ("9:00 pm", "Trivia", "http://utexas.zoom.us/my/cloud.room"),
+        ("10:00 pm", "Games", "http://utexas.zoom.us/my/cloud.room"),
     ],
-    24: [
-        ("7:00 am", "Teambuilding #2", ""),
-        ("8:00 am", "Beginner Intro to Hackathons", ""),
-        ("9:00 am", "Beginner Intro to Git", ""),
-        ("9:30 am", "Bob Ross MS Paint Party", ""),
-        ("10:00 am", "Beginner Mobile Dev", ""),
-        ("10:00 am", "Intro to GCP", ""),
-        ("11:00 am", "Beginner Web Dev", ""),
-        ("11:00 am", "EchoAR Workshop", ""),
-        ("11:00 am", "Guest Speaker: Anant Bhardwaj", ""),
-        ("12:00 pm", "Intro to ML w/ MLDS", ""),
-        ("12:00 pm", "Industry Panel", ""),
-        ("1:00 pm", "Microsoft Event", ""),
-        ("2:00 pm", "Game Dev w/ EGADS", ""),
-        ("2:00 pm", "KuzoClass Workshop", ""),
-        ("2:30 pm", "Guest Speaker: Bill Mannel", ""),
-        ("3:00 pm", "Instabase Event", ""),
-        ("3:30 pm", "Workout w/ HACS", ""),
-        ("4:00 pm", "Wayfair Event", ""),
-        ("4:00 pm", "Diversity Discussion", ""),
-        ("4:30 pm", "Professional Development", ""),
-        ("5:00 pm", "Glimpse Career Fair", ""),
-        ("7:00 pm", "Design Workshop", ""),
-        ("7:00 pm", "GCP x MongoDB: Cloud Hero", ""),
-        ("7:00 pm", "HackTEXIMATHON", ""),
-        ("7:30 pm", "Hackathon Organizer Meetup", ""),
-        ("7:30 pm", "ATLA Watch Party", ""),
-        ("9:30 pm", "Trivia Night", ""),
-        ("10:30 pm", "Game Night", ""),
-    ],
-    25: [
-        ("1:00 am", "Super Smash Bros. Ultimate Tourney", ""),
-        ("2:00 am", "League of Legends 1v1 Tourney", ""),
-        ("8:00 am", "Instabase Event", ""),
-        ("9:00 am", "Pitching Workshop w/ Convergent", ""),
-        ("10:00 am", "Submission Office Hours", ""),
-        ("11:00 am", "Submissions Due!", ""),
-        ("11:30 am", "Judging", ""),
-        ("1:00 pm", "Project Fair", ""),
-        ("2:00 pm", "Closing Ceremony", ""),
+    31: [
+        ("10:00 am", "Judging", ""),
+        ("12:00 pm", "Closing Ceremony", ""),
     ],
 }
 
@@ -93,6 +71,7 @@ def time_elapsed(event):
         + (f"{m} minute{'s' * bool(m - 1)}" if m else "")
     )
 
+
 class Times(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -110,11 +89,11 @@ class Times(commands.Cog):
         else:
             event = end  # hackathon started so give time till end
         if austin() > end:
-            breakdown = "HackTX has ended. Come back next year :))"
+            breakdown = "HackTX 2021 has ended. Come back next year :))"
         else:
             # compose string accordingly
             breakdown = (
-                "HackTX 2020 " + ("begins " if start > austin() else "ends ") + "in " + time_left(event)
+                "HackTX 2021 " + ("begins " if start > austin() else "ends ") + "in " + time_left(event)
             )
 
         await ctx.send(breakdown)
@@ -131,17 +110,17 @@ class Times(commands.Cog):
 
         for day, events in sched.items():
             if day >= austin().day:
-                full_day = ["Friday", "Saturday", "Sunday"][day - 23]  # 23 since that was the first day
+                full_day = ["Saturday", "Sunday"][day - 30]  # 30 since that was the first day
 
                 embed = discord.Embed(
-                    title="HackTX 2020 Schedule :scroll:",
-                    description=f"**{full_day}, Oct {day}** \nso much fun to be had :')",
+                    title="HackTX 2021 Schedule :scroll:",
+                    description=f"**{full_day}, October {day}** \nso much fun to be had :')",
                     color=discord.Colour.dark_purple(),
                 )
 
                 for num, event in enumerate(events):
-                    event_time, event_name, link = event                  
-                    left = dt.strptime(f"2020 Oct {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+                    event_time, event_name, link = event
+                    left = dt.strptime(f"2021 October {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
                     if left > austin():  # check if event hasn't already passed
                         embed.add_field(
                             name=f"{num + 1}. {event_name} at {event_time}",
@@ -176,8 +155,8 @@ class Times(commands.Cog):
 
                 #assumes events in list are in chronological order
                 for num, event in enumerate(events):
-                    event_time, event_name, link = event                  
-                    left = dt.strptime(f"2020 Oct {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+                    event_time, event_name, link = event
+                    left = dt.strptime(f"2021 October {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
                     if left > austin(): #check that event hasn't passed
                         if (dt.__sub__(left, austin()).total_seconds()) <= 60:  # event happening in the next minute
                             text = f"{event_name} starting now!"
@@ -204,12 +183,8 @@ class Times(commands.Cog):
                     )
                 embeds.append(embed)
                 break
-
-        
-            
         await paginate_embed(self.bot, ctx.channel, embeds)
-    
-    
+
     @commands.cooldown(1, 60, commands.BucketType.guild)
     @in_bot_commands()
     @commands.command(name="time",
@@ -225,7 +200,7 @@ class Times(commands.Cog):
             for num, event in enumerate(events):
                 event_time, event_name, link = event             
                 if(contents == event_name):
-                    left = dt.strptime(f"2020 Oct {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+                    left = dt.strptime(f"2021 October {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
                     if left > austin(): # check if event hasn't already passed 
                         text = f"{event_name} starts at {event_time} CT (in {time_left(left)})"
                         # if event is starting within one minute, otherwise 
@@ -242,6 +217,7 @@ class Times(commands.Cog):
                     break
  
         await ctx.send(text)
+
 
 def setup(bot):
     bot.add_cog(Times(bot))
