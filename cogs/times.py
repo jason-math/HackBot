@@ -10,6 +10,7 @@ from discord.ext import commands
 cst = tz(timedelta(hours=-5))  # cst is 5h behind utc
 
 # hackathon start and end times
+<<<<<<< HEAD
 start = dt.fromtimestamp(1635613200, tz=cst)  # 12pm cst oct 30 2021
 end = dt.fromtimestamp(1635699600, tz=cst)  # 12pm cst oct 31 2021
 
@@ -19,6 +20,17 @@ austin = partial(dt.now, tz=cst)  # gives current time in austin, use instead of
 # event format is (time, event name, event link if available)
 sched = {
     30: [
+=======
+start = dt.fromtimestamp(1620481500, tz=cst)  # 8:45am cst may 8 2021
+end = dt.fromtimestamp(1620579600, tz=cst)  # 12pm cst may 9 2021
+
+austin = partial(dt.now, tz=cst)  # gives current time in austin, use instead of dt.now() for uniformity
+
+# May 8-9, 2021
+# event format is (time, event name, event link if available)
+sched = {
+    8: [
+>>>>>>> fb1d025f3d8eed90f94d9173a47e8da755c3bba1
         ("8:45 am", "Opening Ceremony", ""),
         ("9:00 am", "Tech track Ideation Workshop", "http://utexas.zoom.us/my/balloon.room"),
         ("9:00 am", "Idea track Ideation with A4C", "http://utexas.zoom.us/my/stars.room"),
@@ -26,9 +38,15 @@ sched = {
         ("10:00 am", "Intro to social entrepreneurship/design thinking with SELL", "http://utexas.zoom.us/my/cloud.room"),
         ("11:00 am", "Programming Basics", "http://utexas.zoom.us/my/balloon.room"),
         ("11:00 am", "TPEO Project Management", "http://utexas.zoom.us/my/stars.room"),
+<<<<<<< HEAD
         ("12:00 pm", "App Dev", "http://utexas.zoom.us/my/mountain.room"),
         ("12:00 pm", "Civic Tech Project Talk", "http://utexas.zoom.us/my/cloud.room"),
         ("1:00 pm", "Web Dev", "http://utexas.zoom.us/my/balloon.room"),
+=======
+        ("12:00 pm", "Web Dev", "http://utexas.zoom.us/my/mountain.room"),
+        ("12:00 pm", "Civic Tech Project Talk", "http://utexas.zoom.us/my/cloud.room"),
+        ("1:00 pm", "App Dev", "http://utexas.zoom.us/my/balloon.room"),
+>>>>>>> fb1d025f3d8eed90f94d9173a47e8da755c3bba1
         ("1:00 pm", "Mental Health at Hackathons with A4C", "http://utexas.zoom.us/my/stars.room"),
         ("2:00 pm", "Databases", "http://utexas.zoom.us/my/mountain.room"),
         ("3:00 pm", "Tech & Society with A4C", "http://utexas.zoom.us/my/balloon.room"),
@@ -37,7 +55,11 @@ sched = {
         ("9:00 pm", "Trivia", "http://utexas.zoom.us/my/cloud.room"),
         ("10:00 pm", "Games", "http://utexas.zoom.us/my/cloud.room"),
     ],
+<<<<<<< HEAD
     31: [
+=======
+    9: [
+>>>>>>> fb1d025f3d8eed90f94d9173a47e8da755c3bba1
         ("10:00 am", "Judging", ""),
         ("12:00 pm", "Closing Ceremony", ""),
     ],
@@ -89,11 +111,19 @@ class Times(commands.Cog):
         else:
             event = end  # hackathon started so give time till end
         if austin() > end:
+<<<<<<< HEAD
             breakdown = "HackTX 2021 has ended. Come back next year :))"
         else:
             # compose string accordingly
             breakdown = (
                 "HackTX 2021 " + ("begins " if start > austin() else "ends ") + "in " + time_left(event)
+=======
+            breakdown = "Changeathon has ended. Come back next year :))"
+        else:
+            # compose string accordingly
+            breakdown = (
+                "Changeathon " + ("begins " if start > austin() else "ends ") + "in " + time_left(event)
+>>>>>>> fb1d025f3d8eed90f94d9173a47e8da755c3bba1
             )
 
         await ctx.send(breakdown)
@@ -110,17 +140,30 @@ class Times(commands.Cog):
 
         for day, events in sched.items():
             if day >= austin().day:
+<<<<<<< HEAD
                 full_day = ["Saturday", "Sunday"][day - 30]  # 30 since that was the first day
 
                 embed = discord.Embed(
                     title="HackTX 2021 Schedule :scroll:",
                     description=f"**{full_day}, October {day}** \nso much fun to be had :')",
+=======
+                full_day = ["Saturday", "Sunday"][day - 8]  # 8 since that was the first day
+
+                embed = discord.Embed(
+                    title="Changeathon 2021 Schedule :scroll:",
+                    description=f"**{full_day}, May {day}** \nso much fun to be had :')",
+>>>>>>> fb1d025f3d8eed90f94d9173a47e8da755c3bba1
                     color=discord.Colour.dark_purple(),
                 )
 
                 for num, event in enumerate(events):
+<<<<<<< HEAD
                     event_time, event_name, link = event
                     left = dt.strptime(f"2021 October {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+=======
+                    event_time, event_name, link = event                  
+                    left = dt.strptime(f"2021 May {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+>>>>>>> fb1d025f3d8eed90f94d9173a47e8da755c3bba1
                     if left > austin():  # check if event hasn't already passed
                         embed.add_field(
                             name=f"{num + 1}. {event_name} at {event_time}",
@@ -145,7 +188,7 @@ class Times(commands.Cog):
         val = 1
         for day, events in sched.items():
             if day >= austin().day:
-                full_day = ["Friday", "Saturday", "Sunday"][day - 23]  # 23 since that was the first day
+                full_day = ["Saturday", "Sunday"][day - 8]  # 8 since that was the first day
 
                 embed = discord.Embed(
                     title="Upcoming Events! :alarm_clock:",
@@ -155,8 +198,13 @@ class Times(commands.Cog):
 
                 #assumes events in list are in chronological order
                 for num, event in enumerate(events):
+<<<<<<< HEAD
                     event_time, event_name, link = event
                     left = dt.strptime(f"2021 October {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+=======
+                    event_time, event_name, link = event                  
+                    left = dt.strptime(f"2021 May {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+>>>>>>> fb1d025f3d8eed90f94d9173a47e8da755c3bba1
                     if left > austin(): #check that event hasn't passed
                         if (dt.__sub__(left, austin()).total_seconds()) <= 60:  # event happening in the next minute
                             text = f"{event_name} starting now!"
@@ -200,7 +248,11 @@ class Times(commands.Cog):
             for num, event in enumerate(events):
                 event_time, event_name, link = event             
                 if(contents == event_name):
+<<<<<<< HEAD
                     left = dt.strptime(f"2021 October {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+=======
+                    left = dt.strptime(f"2021 May {day} {event_time}", "%Y %b %d %I:%M %p").replace(tzinfo=cst)
+>>>>>>> fb1d025f3d8eed90f94d9173a47e8da755c3bba1
                     if left > austin(): # check if event hasn't already passed 
                         text = f"{event_name} starts at {event_time} CT (in {time_left(left)})"
                         # if event is starting within one minute, otherwise 
