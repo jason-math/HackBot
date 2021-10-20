@@ -1,21 +1,26 @@
 from discord.ext import commands
-from privaterooms import *
 from utils import *
 from discord import CategoryChannel
+import asyncio
+
 
 class Basic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.Cog.listener()
     async def on_command_error(self, ctx, ex):
         channel = await ctx.author.create_dm()
         print(ex)
-        if ctx.message.channel.name == 'bot-commands':
-            await channel.send("Something went wrong. Please DM an organizer if you believe this is not intended.")
-        else:
+        if isinstance(ex, commands.CommandOnCooldown):
+            await channel.send(ex)
+        elif ctx.message.channel.name != 'bot-commands':
             await channel.send("Please keep bot interactions within the #bot-commands channel.")
+        else:
+            await channel.send("Something went wrong. Please DM an organizer if you believe this is not intended.")
+            jason = self.bot.get_user(173263365777522688)
+            dm = await jason.create_dm()
+            await dm.send(ex)
 
     @commands.command(help_command="!ping",
                       description="Ping the bot",
@@ -40,17 +45,24 @@ class Basic(commands.Cog):
     async def room(self, ctx):
         guild = ctx.guild
         author = ctx.author
-        room = PrivateRoom()
+        active_check = True
         if len(ctx.message.mentions) == 0:
             dm = await ctx.author.create_dm()
             await dm.send("Please specify 1 or more specific members (using @) when using !room")
             return
         channel = await create_channel(guild, author, ctx.message.mentions)
-        await room.assign_channel(channel)
         await ctx.send("Room created!")
-        while room.private_channel is not None:
-            await room.active_checker()
-        await ctx.send("%s's room deleted due to inactivity" % author.name)
+        while True:
+            if len(channel.members) == 0:
+                if active_check is True:
+                    active_check = False
+                else:
+                    await channel.delete()
+                    await ctx.send("%s's room deleted due to inactivity" % author.name)
+                    return
+            else:
+                active_check = True
+            await asyncio.sleep(300)
 
     @commands.command(help_command="!invite", description="Create a server invite to share with others", help="Create a server invite for a friend.")
     @commands.guild_only()
@@ -62,28 +74,28 @@ class Basic(commands.Cog):
         link = await ctx.channel.create_invite(max_age=300)
         await ctx.send(link)
 
-    @commands.command(help_command="!sponsors", description="See our list of sponsors.",
-                      help="See our list of sponsors.")
-    @commands.guild_only()
-    @commands.cooldown(1, 60, commands.BucketType.user)
-    @commands.check(commands.has_role("Hacker") or commands.has_role("Organizer") or
-                    commands.has_role("Mentor") or commands.has_role("Sponsor"))
-    @in_bot_commands()
-    async def sponsors(self, ctx):
-        guild = ctx.guild
-        sponsor_category = None
-        for category in guild.categories:
-            if category.name == "Sponsors":
-                sponsor_category = category
-                break
-        if sponsor_category is None:
-            return
-        message = ""
-        for channel in sponsor_category.channels:
-            if channel.name != "sponsor-general":
-                message += f"{channel}, "
-        message = message[:-2]
-        await ctx.send(message)
+    # @commands.command(help_command="!sponsors", description="See our list of sponsors.",
+    #                   help="See our list of sponsors.")
+    # @commands.guild_only()
+    # @commands.cooldown(1, 60, commands.BucketType.user)
+    # @commands.check(commands.has_role("Hacker") or commands.has_role("Organizer") or
+    #                 commands.has_role("Mentor") or commands.has_role("Sponsor"))
+    # @in_bot_commands()
+    # async def sponsors(self, ctx):
+    #     guild = ctx.guild
+    #     sponsor_category = None
+    #     for category in guild.categories:
+    #         if category.name == "Sponsors":
+    #             sponsor_category = category
+    #             break
+    #     if sponsor_category is None:
+    #         return
+    #     message = ""
+    #     for channel in sponsor_category.channels:
+    #         if channel.name != "sponsor-general":
+    #             message += f"{channel}, "
+    #     message = message[:-2]
+    #     await ctx.send(message)
 
 
     @commands.command(help_command="!request <organizer/mentor/sponsor> [company_name] message", help="Request help from an organizer, sponsor, or mentor.")
